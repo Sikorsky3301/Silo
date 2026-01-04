@@ -1,7 +1,7 @@
 import { inngest } from "./client";
 import { openai, createAgent, createTool, createNetwork, Agent, type Tool } from "@inngest/agent-kit";
 import { Sandbox} from '@e2b/code-interpreter'
-import { getsandbox, lastAssistantTextMessageContent } from "./utils";
+import { getsandbox, lastAssistantTextMessageContent } from "@/inngest/utils";
 import { z } from "zod";
 import { PROMPT } from "@/prompt";
 import {prisma} from "@/lib/db"
