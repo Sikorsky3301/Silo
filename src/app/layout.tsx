@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Silo — AI Code Builder",
   description: "Describe what you want to build. Silo builds it.",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({

@@ -21,6 +21,14 @@ const SUGGESTIONS = [
   "Create a weather app with animated icons",
 ];
 
+const COMPANIES = [
+  { name: "NASA",        src: "/logos/nasa.svg",         h: "h-11" },
+  { name: "PlayStation", src: "/logos/playstation.svg",  h: "h-5"  },
+  { name: "Meta",        src: "/logos/meta.svg",         h: "h-6"  },
+  { name: "SpaceX",      src: "/logos/spacex.svg",       h: "h-5"  },
+  { name: "Salesforce",  src: "/logos/salesforce.svg",   h: "h-7"  },
+];
+
 const Page = () => {
   const router = useRouter();
   const [value, setValue] = useState("");
@@ -41,8 +49,14 @@ const Page = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-background">
-      <header className="h-14 flex items-center justify-between px-6 shrink-0 border-b border-border/40">
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* Ambient radial glow */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden>
+        <div className="absolute -top-60 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full bg-gradient-to-b from-violet-600/12 via-indigo-500/6 to-transparent blur-3xl" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] rounded-full bg-gradient-to-r from-violet-500/4 via-indigo-500/4 to-blue-500/4 blur-2xl" />
+      </div>
+
+      <header className="h-14 flex items-center justify-between px-6 shrink-0 border-b border-border/40 relative z-10">
         <div className="flex items-center gap-2.5">
           <Image src="/logo.svg" alt="Silo" width={22} height={22} />
           <span className="font-semibold text-sm tracking-tight">Silo</span>
@@ -61,20 +75,24 @@ const Page = () => {
         </Button>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center gap-8 px-4 -mt-6">
+      <main className="flex-1 flex flex-col items-center gap-8 px-4 pt-20 pb-20 relative z-10">
+        {/* Hero */}
         <div className="text-center space-y-3 max-w-xl">
           <h1 className="text-4xl font-bold tracking-tight">
             What do you want to build?
           </h1>
           <p className="text-muted-foreground text-base">
-            Describe your app and Silo will write and deploy it in seconds.
+            Describe your app and Silo writes, runs, and previews it — live.
           </p>
         </div>
 
+        {/* Input box */}
         <div
           className={cn(
-            "w-full max-w-2xl rounded-2xl border bg-card p-4 shadow-sm transition-all duration-150",
-            isFocused && "shadow-md ring-1 ring-ring/50",
+            "w-full max-w-2xl rounded-2xl border bg-card p-4 shadow-sm transition-all duration-200",
+            isFocused
+              ? "shadow-lg ring-1 ring-violet-500/30 border-violet-500/20"
+              : "hover:border-border/80",
           )}
         >
           <TextareaAutosize
@@ -105,7 +123,7 @@ const Page = () => {
               onClick={handleSubmit}
               disabled={!value.trim() || createProject.isPending}
               size="icon"
-              className="rounded-full size-8"
+              className="rounded-full size-8 bg-violet-600 hover:bg-violet-500 disabled:bg-muted"
             >
               {createProject.isPending ? (
                 <Loader2Icon className="size-4 animate-spin" />
@@ -116,6 +134,7 @@ const Page = () => {
           </div>
         </div>
 
+        {/* Suggestion chips */}
         <div className="flex flex-wrap justify-center gap-2 max-w-2xl">
           {SUGGESTIONS.map((s) => (
             <button
@@ -127,6 +146,29 @@ const Page = () => {
               {s}
             </button>
           ))}
+        </div>
+
+        {/* Trusted by companies */}
+        <div className="w-full max-w-2xl pt-4">
+          <p className="text-center text-[11px] text-muted-foreground/40 uppercase tracking-widest font-medium mb-8">
+            Trusted by teams at
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+            {COMPANIES.map((company) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={company.name}
+                src={company.src}
+                alt={company.name}
+                className={cn(
+                  "w-auto object-contain select-none cursor-default",
+                  "grayscale opacity-25 dark:invert dark:opacity-20",
+                  "hover:opacity-50 dark:hover:opacity-40 transition-opacity duration-200",
+                  company.h,
+                )}
+              />
+            ))}
+          </div>
         </div>
       </main>
     </div>
