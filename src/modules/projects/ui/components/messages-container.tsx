@@ -4,26 +4,37 @@ import { MessageCard } from "./message-card";
 import { MessageForm } from "./message-form";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { Fragment } from "@/generated/prisma";
 
 interface Props {
     projectId: string;
+    activeFragment: Fragment | null;
+    setActiveFragment: (fragment: Fragment) => void;
 }
-export const MessagesContainer = ({ projectId }: Props) => {
+
+
+
+
+export const MessagesContainer = ({ projectId, activeFragment, setActiveFragment }: Props) => {
     const trpc = useTRPC();
     const bottomRef = useRef<HTMLDivElement>(null);
-    const { data: messages } = useSuspenseQuery(trpc.messages.getmany.queryOptions({
-        projectId: projectId,
-    }));
+    const { data: messages } = useSuspenseQuery({
+        ...trpc.messages.getmany.queryOptions({ projectId }),
+        refetchInterval: 3000,
+    });
 
 
 
-
+///////////////////////////////EDITED/////////////////////////////////////////////////////////////////
     useEffect(() => {
         const lastAssistantMessage = messages.findLast((message) => message.role === "ASSISTANT");
-        if(lastAssistantMessage) {
+
+        if(lastAssistantMessage && lastAssistantMessage.fragment) {
            // TODO : Set active fragment 
+           setActiveFragment(lastAssistantMessage.fragment);
         }
-    }, [messages]);
+    }, [messages , setActiveFragment]);
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     useEffect(() => {
@@ -40,8 +51,8 @@ export const MessagesContainer = ({ projectId }: Props) => {
                         role={message.role} 
                         fragment={message.fragment} 
                         createdAt={message.createdAt}
-                        isActiveFragment={false}
-                        onFragmentClick={() => {}}
+                        isActiveFragment={activeFragment?.id === message.fragment?.id}
+                        onFragmentClick={() => setActiveFragment(message.fragment as Fragment)}
                         type = {message.type}/>
                     ))}
                     <div ref={bottomRef} />

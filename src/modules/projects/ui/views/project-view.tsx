@@ -1,35 +1,50 @@
 "use client";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { MessagesContainer } from "../components/messages-container";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
+import { Fragment } from "@/generated/prisma";
+import { ProjectHeader } from "../components/project-header";
+import { FragmentView } from "../components/fragment-view";
 
 interface Props {
-    projectId: string;
-};
-
+  projectId: string;
+}
 
 export const ProjectView = ({ projectId }: Props) => {
-    return (
-        <div className="h-screen">
-            <ResizablePanelGroup direction="horizontal">
+  const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
 
-                <ResizablePanel defaultSize={35}
-                    minSize={20} className="flex flex-col min-h-0">
+  return (
+    <div className="h-screen flex flex-col">
+      <Suspense fallback={<div className="h-12 border-b shrink-0 bg-background" />}>
+        <ProjectHeader projectId={projectId} />
+      </Suspense>
 
-                    <Suspense fallback={<p>Loading messages...</p>}>
-                        <MessagesContainer projectId={projectId} />
-                    </Suspense>
+      <ResizablePanelGroup direction="horizontal" className="flex-1 min-h-0">
+        <ResizablePanel
+          defaultSize={35}
+          minSize={20}
+          className="flex flex-col min-h-0"
+        >
+          <Suspense fallback={<p className="p-4 text-sm text-muted-foreground">Loading messages…</p>}>
+            <MessagesContainer
+              projectId={projectId}
+              activeFragment={activeFragment}
+              setActiveFragment={setActiveFragment}
+            />
+          </Suspense>
+        </ResizablePanel>
 
-                </ResizablePanel>
+        <ResizableHandle withHandle />
 
-                <ResizableHandle withHandle={true} />
-
-                <ResizablePanel defaultSize={65}
-                    minSize={50}>
-                    TODO : Preview Panel
-
-                </ResizablePanel>
-            </ResizablePanelGroup>
-        </div>
-    );
+        <ResizablePanel defaultSize={65} minSize={30} className="flex flex-col">
+          <FragmentView fragment={activeFragment} />
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
+  );
 };

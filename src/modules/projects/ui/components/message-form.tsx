@@ -68,7 +68,7 @@ export const MessageForm = ({ projectId }: Props) => {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className={cn("relative border p-4 pt-1 roundded-xl bg-sidebar dark:bg-sidebar transition-all",
+            <form onSubmit={form.handleSubmit(onSubmit)} className={cn("relative border p-4 pt-1 rounded-xl bg-sidebar dark:bg-sidebar transition-all",
             isFocused && "shadow-xs",
             showUsage && "rounded-t-none", )}>
                 <FormField 

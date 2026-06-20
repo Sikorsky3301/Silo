@@ -83,8 +83,8 @@ export const codeAgentFunction = inngest.createFunction(
                 for(const file of files ) {
                   await sandbox.files.write(file.path , file.content);
                   updatedFiles[file.path] = file.content;
-                  return updatedFiles;
                 }
+                return updatedFiles;
               } catch (error) {
                 return "Error: " + error;
               }
@@ -164,7 +164,7 @@ export const codeAgentFunction = inngest.createFunction(
     !result.state.data.summary || 
     Object.keys(result.state.data.files || {}).length === 0 ;
 
-    const sandboxUrl = await step.run("get-sandbox-id", async () => {
+    const sandboxUrl = await step.run("get-sandbox-url", async () => {
       const sandbox = await getsandbox(sandboxId);
       const host = sandbox.getHost(3000);
       return `https://${host}`;
